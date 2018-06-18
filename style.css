@@ -1,0 +1,215 @@
+:root {
+  --var-headbar-bgcolor: #2e2e2e;
+  --var-headbar-bgcolor-hover: #3f3b3b;
+  --var-headbar-ftcolor: #f1910a;
+  --var-headbar-ftcolor-hover: #f1da0a;
+  --var-body-bgcolor: #4d4d4d;
+}
+
+html {
+  font-size: 16px;
+}
+
+html,
+body {
+  margin: 0 auto;
+  background-color: var(--var-body-bgcolor);
+}
+
+.viewmode_wrapper {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--var-headbar-bgcolor);
+}
+
+.viewmode {
+  text-align: center;
+  font-weight: bold;
+  width: calc(100vw / 3);
+  height: 100%;
+  line-height: 60px;
+  vertical-align: middle;
+  color: var(--var-headbar-ftcolor);
+}
+
+.viewmode:hover {
+  color: var(--var-headbar-ftcolor-hover);
+  background-color: var(--var-headbar-bgcolor-hover);
+  cursor: pointer;
+}
+
+.container {
+  box-sizing: border-box;
+  margin: 32px 0;
+}
+
+.contain_close {
+  display: none;
+}
+
+.contain_open {
+  display: block;
+}
+
+/* define table */
+.table-wrapper {
+  border-radius: 10px;
+  margin: 20px 2vw;
+}
+
+.table-wrapper > label {
+  color: #fff;
+}
+
+table {
+  border-collapse: collapse;
+  font-family: Futura, Arial, sans-serif;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.65em;
+}
+
+th {
+  background: #4272d7;
+  border-right: 1px solid #777;
+  color: #fff;
+}
+
+th:last-child {
+  border: none;
+}
+
+td {
+  border-right: 1px solid #777;
+  text-align: center;
+}
+
+td:last-child {
+  border: none;
+}
+
+tbody tr:nth-child(odd) {
+  background: #ccc;
+}
+
+tbody tr:nth-child(even) {
+  background: #fff;
+}
+
+.table-select {
+  margin-bottom: 10px;
+  color: #fff;
+  font-weight: bold;
+  float: right;
+}
+
+.table-select > select {
+  min-width: 150px;
+  padding: 4.5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  resize: vertical;
+}
+
+#sql-wrapper {
+  border-radius: 0;
+}
+
+.sql_code-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  margin: 3px 0;
+}
+
+.sql_code-row > span {
+  min-width: 120px;
+  color: #fff;
+}
+
+.full-width-option {
+  width: 100%;
+  margin-left: 5px;
+}
+
+.half-width-option {
+  width: 45%;
+  margin-left: 5px;
+}
+
+#sql-sqlcode {
+  width: 100%;
+  padding: 5px;
+  height: 70px;
+  resize: none;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
+.query_button {
+  width: 100%;
+  color: #fff;
+  background-color: #444;
+  transition: all 0.3s ease;
+  border: 1px solid #8c8c8c;
+  text-align: center;
+  padding: 2.7px;
+  float: right;
+  box-sizing: border-box;
+  margin: 15px 0;
+}
+
+.query_button:hover {
+  color: #444;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.query_button_func {
+  width: calc(100% / 3);
+  margin: 15px 10px;
+}
+
+.default-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  margin: 15% 40px;
+  border: 10px solid #fff;
+  box-sizing: border-box;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.default-wrapper > div {
+  margin: 20px;
+}
+
+.button_import {
+  width: 300px;
+  text-align: center;
+}
+
+.button_import:hover {
+  cursor: pointer;
+  background-color: #fff;
+  color: #000;
+}
+
+.table_res {
+  width: 100%;
+  overflow-y: scroll;
+  max-height: 500px;
+  height: 500px;
+}

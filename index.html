@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style.css">
+  <title>sqlite browser</title>
+</head>
+
+<body>
+  <header class="viewmode_wrapper">
+    <div class="viewmode" onclick="modeclick(0);">Browse Data</div>
+    <div class="viewmode" onclick="modeclick(1);">SQL command</div>
+    <div class="viewmode" onclick="modeclick(2);">Button Operation</div>
+  </header>
+  <article class="container db_data contain_close">
+    <div class="table-wrapper">
+      <section class="table-select">
+        <span>Table:</span>
+        <select id="tablelist" name="options" onchange="tableOnChange()"></select>
+      </section>
+      <table id="dbdata_res"></table>
+    </div>
+  </article>
+  <article class="container sql_code contain_close">
+    <div class="table-wrapper">
+      <label>
+        <strong>SQL command | </strong>
+      </label>
+      <section class="sqlcode-wrapper">
+        <textarea placeholder="Please input SQL command here." id="sql-sqlcode" value=""></textarea>
+      </section>
+      <div class="sql_code-row">
+        <div class="query_button" onclick="sqlcode_query()">Query</div>
+      </div>
+      <table id="sqlcode_res" class="table_res"></table>
+    </div>
+  </article>
+  <article class="container button_oper contain_close">
+    <div id="sql-wrapper" class="table-wrapper">
+      <div class="sql_code-row">
+        <div class="query_button query_button_func" id="sql-insert" onclick="askInsertData(0)">Insert</div>
+        <div class="query_button query_button_func" id="sql-update" onclick="askInsertData(1)">Update</div>
+        <div class="query_button query_button_func" id="sql-delete" onclick="askInsertData(2)">Delete</div>
+      </div>
+      <div class="sql_code-row">
+        <span>Table | </span>
+        <select id="sql-table" class="full-width-option" onchange="_attribute()">
+        </select>
+      </div>
+      <div class="sql_code-row">
+        <span>Attribute | </span>
+        <select id="sql-attribute" class="full-width-option">
+        </select>
+      </div>
+      <div class="sql_code-row">
+        <span>Nested | </span>
+        <select id="sql-nested" class="half-width-option">
+          <option value="">NONE</option>
+          <option value="IN">IN</option>
+          <option value="NOTIN">NOTIN</option>
+          <option value="EXISTS">EXISTS</option>
+          <option value="NOT EXISTS">NOT EXISTS</option>
+        </select>
+        <span style="margin-left: 5px;">Aggrgate | </span>
+        <select id="sql-aggrgate" class="half-width-option">
+          <option value="">NONE</option>
+          <option value="COUNT">COUNT</option>
+          <option value="SUM">SUM</option>
+          <option value="MAX">MAX</option>
+          <option value="MIN">MIN</option>
+          <option value="AVG">AVG</option>
+          <option value="HAVING">HAVING</option>
+        </select>
+      </div>
+      <div class="sql_code-row">
+        <span>Keywords | </span>
+        <input id="sql-keywords" class="full-width-option" type="text">
+      </div>
+      <div class="sql_code-row">
+        <span>Having | </span>
+        <input id="sql-having" class="full-width-option" type="text">
+      </div>
+      <div class="sql_code-row">
+        <div class="query_button" id="sql-query" onclick="_search()">Query</div>
+      </div>
+      <table id="button_res" class="table_res"></table>
+    </div>
+  </article>
+  <article class="container default">
+    <div class="default-wrapper">
+      <div class="cur_db">Current Database: null</div>
+      <div class="button_import" onclick="importDB()">Import Database</div>
+    </div>
+  </article>
+  <script>
+    // import js file
+    var render = require('./renderer.js');
+    var SQLiteAPI = require('./SQLiteAPI.js');
+    function tableOnChange() {
+      var table = document.querySelector('#tablelist').value;
+      if (table !== '') {
+        SQLiteAPI.search(table).then(data => {
+          var dbdata_res = document.querySelector('#dbdata_res');
+          createTable(dbdata_res, data);
+        });
+      } else {
+        var dbdata_res = document.querySelector('#dbdata_res');
+        dbdata_res.innerHTML = '';
+      }
+    }
+    function importDB() {
+      SQLiteAPI.importDB().then(() => {
+        var tablelist = document.querySelector('#tablelist');
+        var sql_table = document.querySelector('#sql-table');
+        /* initialize these two select options */
+        tablelist.innerHTML = '<option value="">Please select table</option>';
+        sql_table.innerHTML = '<option value="">Please select table</option>';
+        /* set tablelist into select options */
+        SQLiteAPI.tables.forEach(table => {
+          tablelist.options[tablelist.options.length] = new Option(table.name, table.name);
+          sql_table.options[sql_table.options.length] = new Option(table.name, table.name);
+        });
+        document.querySelector('.cur_db').innerHTML = `Current Database: ${SQLiteAPI.dbpath}`
+      });
+    }
+    function modeclick(index) {
+      render.modeclick(index);
+    }
+    function createTable(wrapper, data) {
+      var rows = data.length;
+      var table_body = "<table><thead><tr>"
+      var keys = Object.keys(data[0]);
+      for (let i = 0; i < keys.length; ++i) {
+        table_body += `<th>${keys[i]}</th>`;
+      }
+      table_body += "</tr></thead><tbody>";
+      for (let i = 0; i < data.length; ++i) {
+        table_body += "<tr>";
+        for (let j = 0; j < keys.length; ++j) {
+          table_body += `<td>${data[i][keys[j]]}</td>`;
+        }
+        table_body += "</tr>";
+      }
+      table_body += "</tbody></table>";
+      wrapper.innerHTML = table_body;
+    }
+    function sqlcode_query() {
+      var sqlcode = document.querySelector('#sql-sqlcode').value;
+      var wrapper = document.querySelector('#sqlcode_res');
+      SQLiteAPI.runSQLcode(sqlcode).then(res => {
+        createTable(wrapper, res);
+      }).catch(error => {
+        wrapper.innerHTML = '<strong style="color: #fff;">input a wrong sql code.</strong>'
+      });
+    }
+    function _attribute() {
+      var table = document.querySelector('#sql-table').value;
+      var sql_attr = document.querySelector('#sql-attribute');
+      sql_attr.innerHTML = '<option value="">Please select attribute</option>';
+      if (table != '') {
+        SQLiteAPI._attribute(table).then(attrList => {
+          attrList.forEach(attr => {
+            sql_attr.options[sql_attr.options.length] = new Option(attr, attr);
+          })
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+    }
+    function _search() {
+      var table = document.querySelector('#sql-table').value;
+      var attr = document.querySelector('#sql-attribute').value;
+      var aggr = document.querySelector('#sql-aggrgate').value;
+      var nested = document.querySelector('#sql-nested').value;
+      var having = document.querySelector('#sql-having').value;
+      var keyword = document.querySelector('#sql-keywords').value;
+
+      var button_res = document.querySelector('#button_res');
+      SQLiteAPI._search(table, attr, nested, aggr, keyword, having).then(res => {
+        createTable(button_res, res);
+      }).catch(err => { console.log(err); });
+    }
+    function askInsertData(type) {
+      SQLiteAPI.askInsertData(type);
+    }
+  </script>
+</body>
+
+</html>

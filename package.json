@@ -1,0 +1,31 @@
+{
+  "name": "db-project",
+  "version": "1.0.0",
+  "description": "for fun",
+  "homepage": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "rebuildlib": "./node_modules/.bin/electron-rebuild",
+    "build": "./node_modules/.bin/electron-builder install-app-deps && ./node_modules/.bin/electron-builder --linux deb tar.xz"
+  },
+  "keywords": [
+    "start",
+    "rebuildlib",
+    "build"
+  ],
+  "author": {
+    "name": "laxative",
+    "email": "laxative0612@gmail.com"
+  },
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "electron-builder": "^20.15.1",
+    "electron-rebuild": "^1.7.3"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "sqlite3": "^4.0.0",
+    "sweetalert2": "^7.22.2"
+  }
+}
